@@ -13,18 +13,18 @@ const PRELUDE =
     , "DEBUG": strictly((args) => { console.log(args[0]); return args[0] })
     , "cat": strictly((args) => args[0].reduce((a, b) => a.concat(b)))
     , "let": (go, args) => {
-            var binds = args[0]
-            var body = args[1]
+            const binds = args[0]
+            const body = args[1]
 
-            var local = {}
-            for (var i = 0, e = binds.length; i < e; i += 2) {
+            const local = {}
+            for (let i = 0, e = binds.length; i < e; i += 2) {
                 local[binds[i]] = SExpr.eval(go.env(local), binds[i+1])
             }
 
             return SExpr.eval(go.env(local), body)
         }
     , "cond": (go, args) => {
-            for (var i = 0; i < args.length; i += 2) {
+            for (let i = 0; i < args.length; i += 2) {
                 if (go(args[i]) === true) {
                     return go(args[i+1])
                 }
@@ -32,21 +32,20 @@ const PRELUDE =
             return false
         }
     , "map": (go, args) => {
+            let i, x
             if (Array.isArray(args[0])) {
-                var x = args[0][1]
-                var i = args[0][0]
+                i = args[0][0]
+                x = args[0][1]
             }
             else {
-                var x = args[0]
-                var i = undefined
+                i = undefined
+                x = args[0]
             }
-            var over = go(args[1])
-            var body = args[2]
+            const over = go(args[1])
+            const body = args[2]
 
             return over.map((item, ix) => {
-                var local = {}
-                local[x] = go(item)
-                local[i] = ix
+                const  local = { [i]: ix, [x]: go(item) }
                 return SExpr.eval(go.env(local), body)
             })
         }
@@ -81,7 +80,7 @@ function applyDefaults(circuit) {
 
 function lookupParts(circuit) {
     circuit.dips.forEach((dip) => {
-        var partinfo = PINS_BY_PART[dip.partno]
+        const partinfo = PINS_BY_PART[dip.partno]
         dip.pins = partinfo.pins
         dip.width = partinfo.width
     })

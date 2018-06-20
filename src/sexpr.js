@@ -4,32 +4,32 @@ function fromStr(str) {
     str = str.replace(/[()[\]{}`']/g, (x) => ` ${x} `)
     const tokens = str.split(" ").filter((token) => token.length > 0)
 
-    var stack = [[]]
+    const stack = [[]]
     tokens.forEach((token) => {
         if (token === "(" || token === "[" || token === "{" || token === '`') {
             stack.push([])
         }
         else if (token === ")") {
-            var combination = stack.pop()
+            const combination = stack.pop()
             stack[stack.length - 1].push(
                 { __COMBO__: combination[0]
                 , __STUFF__: combination.slice(1)
                 })
         }
         else if (token === "]") {
-            var list = stack.pop()
+            const list = stack.pop()
             stack[stack.length - 1].push(list)
         }
         else if (token === "}") {
-            var kvs = stack.pop()
-            var obj = {}
-            for (var i = 0, e = kvs.length; i < e; i += 2) {
+            const kvs = stack.pop()
+            const obj = {}
+            for (let i = 0, e = kvs.length; i < e; i += 2) {
                 obj[kvs[i]] = kvs[i+1]
             }
             stack[stack.length - 1].push(obj)
         }
         else if (token === "'") {
-            var string = stack.pop().join(" ")
+            const string = stack.pop().join(" ")
             stack[stack.length - 1].push(string)
         }
         else if (token.startsWith("$")) {
@@ -50,14 +50,14 @@ function fromStr(str) {
 
 
 function evalSexpr(env, sexpr) {
-    var go = (x) => evalSexpr(env, x)
+    const go = (x) => evalSexpr(env, x)
     go.env = (more) => Object.assign({}, env, more)
 
     if (sexpr.hasOwnProperty("__VAR__")) {
         return env[sexpr.__VAR__]
     }
     else if (sexpr.hasOwnProperty("__COMBO__") && sexpr.hasOwnProperty("__STUFF__")) {
-        var f = env[sexpr.__COMBO__]
+        const f = env[sexpr.__COMBO__]
         if (typeof f !== "function") { throw sexpr.__COMBO__ + " is not a function" }
         return f(go, sexpr.__STUFF__)
     }
@@ -65,7 +65,7 @@ function evalSexpr(env, sexpr) {
         return sexpr.map(go)
     }
     else if (typeof sexpr === "object") {
-        var value = {}
+        const value = {}
         Object.keys(sexpr).forEach((k) => {
             value[k] = go(sexpr[k])
         })

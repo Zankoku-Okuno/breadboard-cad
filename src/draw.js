@@ -2,7 +2,7 @@ import { PITCH } from "./config.js"
 
 
 function point(dom, row, col) {
-    var point = document.createSvgElement("circle")
+    const point = document.createSvgElement("circle")
     point.setAttribute("cx", PITCH * row)
     point.setAttribute("cy", PITCH * col)
     point.setAttribute("r", PITCH/4)
@@ -15,12 +15,12 @@ function wire(dom, wire) {
     point(dom, wire.start[0], wire.start[1]).setAttribute("fill", wire.color)
     point(dom, wire.stop[0], wire.stop[1]).setAttribute("fill", wire.color)
 
-    var d = "M "+(wire.start[0]*PITCH)+" "+(wire.start[1]*PITCH)
+    let d = "M "+(wire.start[0]*PITCH)+" "+(wire.start[1]*PITCH)
     wire.route.forEach((point) => {
         d += " L "+(point[0]*PITCH)+" "+(point[1]*PITCH)
     })
     d += " L "+(wire.stop[0]*PITCH)+" "+(wire.stop[1]*PITCH)
-    var line = document.createSvgElement("path")
+    const line = document.createSvgElement("path")
     line.setAttribute("d", d)
     line.setAttribute("stroke", wire.color)
     dom.appendChild(line)
@@ -28,12 +28,12 @@ function wire(dom, wire) {
 
 
 function header(dom, header) {
-    var point = document.createSvgElement("rect")
+    const point = document.createSvgElement("rect")
     point.setAttribute("x", (header.at[0] - 2/5)*PITCH)
     point.setAttribute("y", (header.at[1] - 2/5)*PITCH)
     point.setAttribute("width", (4/5)*PITCH)
     point.setAttribute("height", (4/5)*PITCH)
-    var title = document.createSvgElement("title")
+    const title = document.createSvgElement("title")
     title.textContent = header.name
     point.appendChild(title)
     point.setAttribute("fill", header.color)
@@ -41,13 +41,13 @@ function header(dom, header) {
 }
 
 function dip(dom, dip) {
-    var x1 = dip.start[0]
-    var y1 = dip.start[1]
-    var x2 = dip.start[0] + dip.pins.length/2 - 1
-    var y2 = dip.start[1] - dip.width
+    const x1 = dip.start[0]
+    const y1 = dip.start[1]
+    const x2 = dip.start[0] + dip.pins.length/2 - 1
+    const y2 = dip.start[1] - dip.width
 
     // packaging
-    var pkg = document.createSvgElement("rect")
+    const pkg = document.createSvgElement("rect")
     pkg.setAttribute("x", x1*PITCH - (2/5)*PITCH)
     pkg.setAttribute("y", y2*PITCH)
     pkg.setAttribute("width", (dip.pins.length/2 - 1)*PITCH + 2*(2/5)*PITCH)
@@ -55,37 +55,38 @@ function dip(dom, dip) {
     dom.appendChild(pkg)
     // pins
     // these go over the package so that they are more easily tooltipped-over
-    for (var i = 0; i < dip.pins.length / 2; ++i) {
-        var topPoint = point(dom, x1 + i, y2)
-        var topTooltip = document.createSvgElement("title")
+    for (let i = 0; i < dip.pins.length / 2; ++i) {
+        const topPoint = point(dom, x1 + i, y2)
+        const topTooltip = document.createSvgElement("title")
         topTooltip.textContent = dip.pins[dip.pins.length - 1 - i]
         topPoint.appendChild(topTooltip)
 
-        var botPoint = point(dom, x1 + i, y1)
-        var botTooltip = document.createSvgElement("title")
+        const botPoint = point(dom, x1 + i, y1)
+        const botTooltip = document.createSvgElement("title")
         botTooltip.textContent = dip.pins[i]
         botPoint.appendChild(botTooltip)
     }
     // labels
-    var name = document.createSvgElement("text")
+    const name = document.createSvgElement("text")
     name.textContent = dip.name
     name.setAttribute("x", x1*PITCH)
     name.setAttribute("y", (y2+1)*PITCH)
     dom.appendChild(name)
-    var partno = document.createSvgElement("text")
+    const partno = document.createSvgElement("text")
     partno.textContent = dip.partno
     partno.setAttribute("x", x1*PITCH)
     partno.setAttribute("y", (y2+2)*PITCH)
     dom.appendChild(partno)
     // pin 1 indicator
-    var indicator = document.createSvgElement("circle")
+    const indicator = document.createSvgElement("circle")
+    let indicatorX, indicatorY
     if (dip.flip) {
-        var indicatorX = x2*PITCH - (1/5)*PITCH
-        var indicatorY = (y2+0.5)*PITCH
+        indicatorX = x2*PITCH - (1/5)*PITCH
+        indicatorY = (y2+0.5)*PITCH
     }
     else {
-        var indicatorX = x1*PITCH + (1/5)*PITCH
-        var indicatorY = (y1-0.5)*PITCH
+        indicatorX = x1*PITCH + (1/5)*PITCH
+        indicatorY = (y1-0.5)*PITCH
     }
     indicator.setAttribute("cx", indicatorX)
     indicator.setAttribute("cy", indicatorY)

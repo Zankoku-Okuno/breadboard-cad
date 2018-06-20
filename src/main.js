@@ -12,15 +12,15 @@ document.createSvgElement = (tag) => document.createElementNS("http://www.w3.org
 
 function drawBreadboard(dom) {
     // main holes
-    for (var i = 0; i < 63; ++i) {
-        for (var j = 0; j < 5; ++j) {
+    for (let i = 0; i < 63; ++i) {
+        for (let j = 0; j < 5; ++j) {
             Draw.point(dom, i, j)
             Draw.point(dom, i, j + 7)
         }
     }
     // power rail holes
-    for (var i = 0, offset = 2; i < 10; ++i, ++offset) {
-        for (var j = 0; j < 5; ++j) {
+    for (let i = 0, offset = 2; i < 10; ++i, ++offset) {
+        for (let j = 0; j < 5; ++j) {
             ;["-T", "+T", "-B", "+B"].forEach((col) => {
                 Draw.point(dom, i*5 + j + offset, COL_BY_NAME[col])
             })
@@ -29,7 +29,7 @@ function drawBreadboard(dom) {
     // column labels
     "ABCDEFGHIJ".split("").forEach((col) => {
         ;[-1, 63].forEach((row) => {
-            var label = document.createSvgElement("text")
+            const label = document.createSvgElement("text")
             label.textContent = col
             label.setAttribute("x", row*PITCH)
             label.setAttribute("y", (COL_BY_NAME[col] + 2/5)*PITCH)
@@ -37,9 +37,9 @@ function drawBreadboard(dom) {
         })
     })
     //row labels
-    for (var i = 0; i < 63; i += (i === 0 ? 4 : 5)) {
+    for (let i = 0; i < 63; i += (i === 0 ? 4 : 5)) {
         ;[["A", 1.5], ["J", -1]].forEach((entry) => {
-            var label = document.createSvgElement("text")
+            const label = document.createSvgElement("text")
             label.textContent = i+1
             label.setAttribute("x", i*PITCH)
             label.setAttribute("y", (COL_BY_NAME[entry[0]] + entry[1])*PITCH)
@@ -50,7 +50,7 @@ function drawBreadboard(dom) {
     ;[1, 61].forEach((row) => {
         ;["T", "B"].forEach((side) => {
             ;["-", "+"].forEach((polarity) => {
-                var label = document.createSvgElement("text")
+                const label = document.createSvgElement("text")
                 label.textContent = polarity
                 label.setAttribute("x", row*PITCH)
                 label.setAttribute("y", (COL_BY_NAME[polarity+side] + 1/5)*PITCH)
@@ -70,11 +70,11 @@ function render(ast, dom) {
 
 
 function updateFromSource(dom) {
-    var source = dom.sourcecode.value
-    var ast = compile(source)
+    const source = dom.sourcecode.value
+    const circuit = compile(source)
     dom.components.innerHTML = ""
     dom.wires.innerHTML = ""
-    render(ast,
+    render(circuit,
         { components: dom.components
         , wires: dom.wires
         })
@@ -83,12 +83,13 @@ function updateFromSource(dom) {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    var dom =
+    const dom =
         { holes: document.querySelector("#holes")
         , sourcecode: document.querySelector("#sourcecode")
         , components: document.querySelector("#components")
         , wires: document.querySelector("#wires")
         }
+    Object.freeze(dom)
 
 
     drawBreadboard(dom.holes)
