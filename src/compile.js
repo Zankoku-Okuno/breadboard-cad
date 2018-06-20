@@ -1,17 +1,17 @@
 import { COL_BY_NAME } from "./config.js"
 import * as SExpr from "./sexpr.js"
-import { strict } from "./sexpr.js"
+import { strictly } from "./sexpr.js"
 
 
-let LIBRARY =
-    { "+": strict((args) => args.reduce(Array.isArray(args[0]) ? (a, b) => a.concat(b) : (a, b) => a + b))
-    , "-": strict((args) => args.length === 1 ? -args[0] : args[1] - args[0])
-    , "*": strict((args) => args.reduce((a, b) => a * b))
-    , "%": strict((args) => args[1] % args[0])
-    , ".": strict((args) => args[0][args[1]])
-    , "=?": strict((args) => args[0] === args[1])
-    , "DEBUG": strict((args) => { console.log(args[0]); return args[0] })
-    , "cat": strict((args) => args[0].reduce((a, b) => a.concat(b)))
+const PRELUDE =
+    { "+": strictly((args) => args.reduce(Array.isArray(args[0]) ? (a, b) => a.concat(b) : (a, b) => a + b))
+    , "-": strictly((args) => args.length === 1 ? -args[0] : args[1] - args[0])
+    , "*": strictly((args) => args.reduce((a, b) => a * b))
+    , "%": strictly((args) => args[1] % args[0])
+    , ".": strictly((args) => args[0][args[1]])
+    , "=?": strictly((args) => args[0] === args[1])
+    , "DEBUG": strictly((args) => { console.log(args[0]); return args[0] })
+    , "cat": strictly((args) => args[0].reduce((a, b) => a.concat(b)))
     , "let": (go, args) => {
             var binds = args[0]
             var body = args[1]
@@ -51,51 +51,50 @@ let LIBRARY =
             })
         }
     , "catMap": (go, args) => {
-            return LIBRARY["map"](go, args).reduce((a, b) => a.concat(b), [])
+            return PRELUDE["map"](go, args).reduce((a, b) => a.concat(b), [])
         }
     }
 
 function compile(source) {
-    var ast = SExpr.str2sexprs(source)[0]
-    console.log(ast)
-    ast = SExpr.eval(LIBRARY, ast)
+    const ast = SExpr.fromStr(source)[0]
+    const circuit = SExpr.eval(PRELUDE, ast)
 
-    applyDefaults(ast)
-    lookupParts(ast)
-    adjustPositions(ast)
+    applyDefaults(circuit)
+    lookupParts(circuit)
+    adjustPositions(circuit)
 
     // TODO check no two pins in the same hole
 
-    Object.freeze(ast)
-    return ast
+    Object.freeze(circuit)
+    return circuit
 }
 
 
-function applyDefaults(ast) {
-    ast.dips.forEach((dip) => {
+function applyDefaults(circuit) {
+    circuit.dips.forEach((dip) => {
         if (dip.flip === undefined) { dip.flip = false }
     })
-    ast.wires.forEach((wire) => {
+    circuit.wires.forEach((wire) => {
         if (wire.route === undefined) { wire.route = [] }
     })
 }
 
-function lookupParts(ast) {
-    ast.dips.forEach((dip) => {
+function lookupParts(circuit) {
+    circuit.dips.forEach((dip) => {
         var partinfo = PINS_BY_PART[dip.partno]
         dip.pins = partinfo.pins
         dip.width = partinfo.width
     })
 }
 
-function adjustPositions(ast) {
-    ast.dips.forEach((dip) => {
+function adjustPositions(circuit) {
+    circuit.dips.forEach((dip) => {
         dip.start[0]--
         if (typeof dip.start[1] !== "number") {
             dip.start[1] = COL_BY_NAME[dip.start[1]]
         }
     })
-    ast.wires.forEach((wire) => {
+    circuit.wires.forEach((wire) => {
         wire.start[0]--
         if (typeof wire.start[1] !== "number") {
             wire.start[1] = COL_BY_NAME[wire.start[1]]
@@ -111,7 +110,7 @@ function adjustPositions(ast) {
             wire.stop[1] = COL_BY_NAME[wire.stop[1]]
         }
     })
-    ast.headers.forEach((header) => {
+    circuit.headers.forEach((header) => {
         header.at[0]--
         if (typeof header.at[1] !== "number") {
             header.at[1] = COL_BY_NAME[header.at[1]]

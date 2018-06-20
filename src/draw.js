@@ -1,7 +1,7 @@
 import { PITCH } from "./config.js"
 
 
-function drawPoint(dom, row, col) {
+function point(dom, row, col) {
     var point = document.createSvgElement("circle")
     point.setAttribute("cx", PITCH * row)
     point.setAttribute("cy", PITCH * col)
@@ -11,9 +11,9 @@ function drawPoint(dom, row, col) {
 }
 
 
-function drawWire(dom, wire) {
-    drawPoint(dom, wire.start[0], wire.start[1]).setAttribute("fill", wire.color)
-    drawPoint(dom, wire.stop[0], wire.stop[1]).setAttribute("fill", wire.color)
+function wire(dom, wire) {
+    point(dom, wire.start[0], wire.start[1]).setAttribute("fill", wire.color)
+    point(dom, wire.stop[0], wire.stop[1]).setAttribute("fill", wire.color)
 
     var d = "M "+(wire.start[0]*PITCH)+" "+(wire.start[1]*PITCH)
     wire.route.forEach((point) => {
@@ -27,7 +27,7 @@ function drawWire(dom, wire) {
 }
 
 
-function drawHeader(dom, header) {
+function header(dom, header) {
     var point = document.createSvgElement("rect")
     point.setAttribute("x", (header.at[0] - 2/5)*PITCH)
     point.setAttribute("y", (header.at[1] - 2/5)*PITCH)
@@ -40,7 +40,7 @@ function drawHeader(dom, header) {
     dom.appendChild(point)
 }
 
-function drawDip(dom, dip) {
+function dip(dom, dip) {
     var x1 = dip.start[0]
     var y1 = dip.start[1]
     var x2 = dip.start[0] + dip.pins.length/2 - 1
@@ -56,12 +56,12 @@ function drawDip(dom, dip) {
     // pins
     // these go over the package so that they are more easily tooltipped-over
     for (var i = 0; i < dip.pins.length / 2; ++i) {
-        var topPoint = drawPoint(dom, x1 + i, y2)
+        var topPoint = point(dom, x1 + i, y2)
         var topTooltip = document.createSvgElement("title")
         topTooltip.textContent = dip.pins[dip.pins.length - 1 - i]
         topPoint.appendChild(topTooltip)
 
-        var botPoint = drawPoint(dom, x1 + i, y1)
+        var botPoint = point(dom, x1 + i, y1)
         var botTooltip = document.createSvgElement("title")
         botTooltip.textContent = dip.pins[i]
         botPoint.appendChild(botTooltip)
@@ -95,4 +95,4 @@ function drawDip(dom, dip) {
 }
 
 
-export { drawPoint, drawWire, drawHeader, drawDip }
+export { point, wire, header, dip }

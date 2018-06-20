@@ -1,4 +1,4 @@
-function str2sexprs(str) {
+function fromStr(str) {
     str = str.replace(/;.*($|\n)/g, '')
     str = str.replace(/\n/g, '')
     str = str.replace(/[()[\]{}`']/g, (x) => ` ${x} `)
@@ -77,7 +77,7 @@ function evalSexpr(env, sexpr) {
 }
 
 
-var strict = (f) => (go, sexprs) => f(sexprs.map(go))
+const strictly = (f) => (go, sexprs) => f(sexprs.map(go))
 
 
-export { str2sexprs, evalSexpr as eval, strict }
+export { fromStr, evalSexpr as eval, strictly }

@@ -14,15 +14,15 @@ function drawBreadboard(dom) {
     // main holes
     for (var i = 0; i < 63; ++i) {
         for (var j = 0; j < 5; ++j) {
-            Draw.drawPoint(dom, i, j)
-            Draw.drawPoint(dom, i, j + 7)
+            Draw.point(dom, i, j)
+            Draw.point(dom, i, j + 7)
         }
     }
     // power rail holes
     for (var i = 0, offset = 2; i < 10; ++i, ++offset) {
         for (var j = 0; j < 5; ++j) {
             ;["-T", "+T", "-B", "+B"].forEach((col) => {
-                Draw.drawPoint(dom, i*5 + j + offset, COL_BY_NAME[col])
+                Draw.point(dom, i*5 + j + offset, COL_BY_NAME[col])
             })
         }
     }
@@ -63,9 +63,9 @@ function drawBreadboard(dom) {
 
 
 function render(ast, dom) {
-    ast.dips.forEach((dip) => Draw.drawDip(dom.components, dip))
-    ast.wires.forEach((wire) => Draw.drawWire(dom.wires, wire))
-    ast.headers.forEach((header) => Draw.drawHeader(dom.wires, header))
+    ast.dips.forEach((dip) => Draw.dip(dom.components, dip))
+    ast.wires.forEach((wire) => Draw.wire(dom.wires, wire))
+    ast.headers.forEach((header) => Draw.header(dom.wires, header))
 }
 
 
