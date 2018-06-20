@@ -1,0 +1,23 @@
+#holes circle {
+    stroke: grey;
+    fill: none;
+}
+#holes text {
+    font: 12px sans-serif;
+    fill: grey;
+    text-anchor: middle;
+}
+
+#components text {
+    font: 16px sans-serif;
+    fill: grey;
+}
+#components .indicator {
+    stroke: none;
+    fill: grey;
+}
+
+#wires path {
+    stroke-width: 4;
+    fill: none;
+}

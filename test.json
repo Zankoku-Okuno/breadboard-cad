@@ -1,0 +1,129 @@
+{ "dips":
+    [ { "name": "R0"
+      , "partno": "74HC376"
+      , "start": [15, "E"]
+      , "flip": false
+      }
+    , { "name": "R1"
+      , "partno": "74HC376"
+      , "start": [27, "E"]
+      , "flip": false
+      }
+    , { "name": "R2"
+      , "partno": "74HC376"
+      , "start": [39, "E"]
+      , "flip": false
+      }
+    , { "name": "R3"
+      , "partno": "74HC376"
+      , "start": [51, "E"]
+      , "flip": false
+      }
+    , { "name": "R/W Control"
+      , "partno": "74HC139"
+      , "start": [5, "E"]
+      , "flip": false
+      }
+    ]
+, "wires":
+    [ { "start": [5, "+T"], "stop": [5, "J"], "color": "red" }
+    , { "start": [15, "+T"], "stop": [15, "J"], "color": "red" }
+    , { "start": [27, "+T"], "stop": [27, "J"], "color": "red" }
+    , { "start": [39, "+T"], "stop": [39, "J"], "color": "red" }
+    , { "start": [51, "+T"], "stop": [51, "J"], "color": "red" }
+
+    , { "start": [12, "-B"], "stop": [12, "A"], "color": "black" }
+    , { "start": [24, "-B"], "stop": [24, "A"], "color": "black" }
+    , { "start": [36, "-B"], "stop": [36, "A"], "color": "black" }
+    , { "start": [48, "-B"], "stop": [48, "A"], "color": "black" }
+    , { "start": [60, "-B"], "stop": [60, "A"], "color": "black" }
+
+
+    , { "start": [16, "G"], "stop": [17, "G"], "color": "#0000FF" }
+    , { "start": [17, "H"], "route": [ [17, 2.6], [28, 2.6] ], "stop": [28, "H"], "color": "#0000FF" }
+    , { "start": [28, "G"], "stop": [29, "G"], "color": "#0000FF" }
+    , { "start": [29, "H"], "route": [ [29, 2.6], [40, 2.6] ], "stop": [40, "H"], "color": "#0000FF" }
+    , { "start": [40, "G"], "stop": [41, "G"], "color": "#0000FF" }
+    , { "start": [41, "H"], "route": [ [41, 2.6], [52, 2.6] ], "stop": [52, "H"], "color": "#0000FF" }
+    , { "start": [52, "G"], "stop": [53, "G"], "color": "#0000FF" }
+
+    , { "start": [18, "G"], "stop": [19, "G"], "color": "#0040FF" }
+    , { "start": [19, "H"], "route": [ [19, 2.4], [30, 2.4] ], "stop": [30, "H"], "color": "#0040FF" }
+    , { "start": [30, "G"], "stop": [31, "G"], "color": "#0040FF" }
+    , { "start": [31, "H"], "route": [ [31, 2.4], [42, 2.4] ], "stop": [42, "H"], "color": "#0040FF" }
+    , { "start": [42, "G"], "stop": [43, "G"], "color": "#0040FF" }
+    , { "start": [43, "H"], "route": [ [43, 2.4], [54, 2.4] ], "stop": [54, "H"], "color": "#0040FF" }
+    , { "start": [54, "G"], "stop": [55, "G"], "color": "#0040FF" }
+
+    , { "start": [20, "G"], "stop": [21, "G"], "color": "#0080FF" }
+    , { "start": [21, "H"], "route": [ [21, 1.6], [32, 1.6] ], "stop": [32, "H"], "color": "#0080FF" }
+    , { "start": [32, "G"], "stop": [33, "G"], "color": "#0080FF" }
+    , { "start": [33, "H"], "route": [ [33, 1.6], [44, 1.6] ], "stop": [44, "H"], "color": "#0080FF" }
+    , { "start": [44, "G"], "stop": [45, "G"], "color": "#0080FF" }
+    , { "start": [45, "H"], "route": [ [45, 1.6], [56, 1.6] ], "stop": [56, "H"], "color": "#0080FF" }
+    , { "start": [56, "G"], "stop": [57, "G"], "color": "#0080FF" }
+
+    , { "start": [22, "G"], "stop": [23, "G"], "color": "#00B0FF" }
+    , { "start": [23, "H"], "route": [ [23, 1.4], [34, 1.4] ], "stop": [34, "H"], "color": "#00B0FF" }
+    , { "start": [34, "G"], "stop": [35, "G"], "color": "#00B0FF" }
+    , { "start": [35, "H"], "route": [ [35, 1.4], [46, 1.4] ], "stop": [46, "H"], "color": "#00B0FF" }
+    , { "start": [46, "G"], "stop": [47, "G"], "color": "#00B0FF" }
+    , { "start": [47, "H"], "route": [ [47, 1.4], [58, 1.4] ], "stop": [58, "H"], "color": "#00B0FF" }
+    , { "start": [58, "G"], "stop": [59, "G"], "color": "#00B0FF" }
+
+    , { "start": [16, "D"], "stop": [17, "D"], "color": "#0000FF" }
+    , { "start": [17, "C"], "route": [ [17, 8.4], [28, 8.4] ], "stop": [28, "C"], "color": "#0000FF" }
+    , { "start": [28, "D"], "stop": [29, "D"], "color": "#0000FF" }
+    , { "start": [29, "C"], "route": [ [29, 8.4], [40, 8.4] ], "stop": [40, "C"], "color": "#0000FF" }
+    , { "start": [40, "D"], "stop": [41, "D"], "color": "#0000FF" }
+    , { "start": [41, "C"], "route": [ [41, 8.4], [52, 8.4] ], "stop": [52, "C"], "color": "#0000FF" }
+    , { "start": [52, "D"], "stop": [53, "D"], "color": "#0000FF" }
+
+    , { "start": [18, "D"], "stop": [19, "D"], "color": "#0040FF" }
+    , { "start": [19, "C"], "route": [ [19, 8.6], [30, 8.6] ], "stop": [30, "C"], "color": "#0040FF" }
+    , { "start": [30, "D"], "stop": [31, "D"], "color": "#0040FF" }
+    , { "start": [31, "C"], "route": [ [31, 8.6], [42, 8.6] ], "stop": [42, "C"], "color": "#0040FF" }
+    , { "start": [42, "D"], "stop": [43, "D"], "color": "#0040FF" }
+    , { "start": [43, "C"], "route": [ [43, 8.6], [54, 8.6] ], "stop": [54, "C"], "color": "#0040FF" }
+    , { "start": [54, "D"], "stop": [55, "D"], "color": "#0040FF" }
+
+    , { "start": [20, "D"], "stop": [21, "D"], "color": "#0080FF" }
+    , { "start": [21, "C"], "route": [ [21, 9.4], [32, 9.4] ], "stop": [32, "C"], "color": "#0080FF" }
+    , { "start": [32, "D"], "stop": [33, "D"], "color": "#0080FF" }
+    , { "start": [33, "C"], "route": [ [33, 9.4], [44, 9.4] ], "stop": [44, "C"], "color": "#0080FF" }
+    , { "start": [44, "D"], "stop": [45, "D"], "color": "#0080FF" }
+    , { "start": [45, "C"], "route": [ [45, 9.4], [56, 9.4] ], "stop": [56, "C"], "color": "#0080FF" }
+    , { "start": [56, "D"], "stop": [57, "D"], "color": "#0080FF" }
+
+    , { "start": [22, "D"], "stop": [23, "D"], "color": "#00B0FF" }
+    , { "start": [23, "C"], "route": [ [23, 9.6], [34, 9.6] ], "stop": [34, "C"], "color": "#00B0FF" }
+    , { "start": [34, "D"], "stop": [35, "D"], "color": "#00B0FF" }
+    , { "start": [35, "C"], "route": [ [35, 9.6], [46, 9.6] ], "stop": [46, "C"], "color": "#00B0FF" }
+    , { "start": [46, "D"], "stop": [47, "D"], "color": "#00B0FF" }
+    , { "start": [47, "C"], "route": [ [47, 9.6], [58, 9.6] ], "stop": [58, "C"], "color": "#00B0FF" }
+    , { "start": [58, "D"], "stop": [59, "D"], "color": "#00B0FF" }
+
+    , { "start": [11, "D"], "stop": [15, "D"], "color": "yellow" }
+    , { "start": [10, "D"], "route": [ [11, "D.5"] ], "stop": [27, "D"], "color": "yellow" }
+    , { "start": [9, "D"], "route": [ [11, "C"] ], "stop": [39, "D"], "color": "yellow" }
+    , { "start": [8, "D"], "route": [ [11, "C.5"] ], "stop": [51, "D"], "color": "yellow" }
+  ]
+, "headers":
+    [ { "name": "Bank Read Enable", "at": [5, "D"], "color": "orange" }
+    , { "name": "Read Addr 0", "at": [6, "D"], "color": "yellow" }
+    , { "name": "Read Addr 1", "at": [7, "D"], "color": "yellow" }
+
+    , { "name": "Bank Write Enable", "at": [6, "G"], "color": "orange" }
+    , { "name": "Write Addr 0", "at": [7, "G"], "color": "yellow" }
+    , { "name": "Write Addr 1", "at": [8, "G"], "color": "yellow" }
+
+    , { "name": "D0", "at": [53, "J"], "color": "#0000FF" }
+    , { "name": "D1", "at": [55, "J"], "color": "#0040FF" }
+    , { "name": "D2", "at": [57, "J"], "color": "#0080FF" }
+    , { "name": "D3", "at": [59, "J"], "color": "#00B0FF" }
+    , { "name": "D4", "at": [53, "A"], "color": "#0000FF" }
+    , { "name": "D5", "at": [55, "A"], "color": "#0040FF" }
+    , { "name": "D6", "at": [57, "A"], "color": "#0080FF" }
+    , { "name": "D7", "at": [59, "A"], "color": "#00B0FF" }
+    ]
+}
