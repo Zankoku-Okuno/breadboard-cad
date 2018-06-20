@@ -1,20 +1,8 @@
-// import * as Pinout from "pinout.js"
+import { PITCH, COL_BY_NAME } from "./config.js"
+import { compile } from "./compile.js"
+import * as Draw from "./draw.js"
 
-PITCH = 18
-COL_BY_NAME = {
-    "A": 11, "A.5": 11+0.5,
-    "B": 10, "B.5": 10+0.5,
-    "C": 9, "C.5": 9+0.5,
-    "D": 8, "D.5": 8+0.5,
-    "E": 7, "E.5": 7+0.5,
-    "F": 4, "F.5": 4-0.5,
-    "G": 3, "G.5": 3-0.5,
-    "H": 2, "H.5": 2-0.5,
-    "I": 1, "I.5": 1-0.5,
-    "J": 0, "J.5": 0-0.5,
-    "-T": -4, "+T": -3,
-    "-B": 14, "+B": 15,
-}
+
 
 
 
@@ -26,15 +14,15 @@ function drawBreadboard(dom) {
     // main holes
     for (var i = 0; i < 63; ++i) {
         for (var j = 0; j < 5; ++j) {
-            drawPoint(dom, i, j)
-            drawPoint(dom, i, j + 7)
+            Draw.drawPoint(dom, i, j)
+            Draw.drawPoint(dom, i, j + 7)
         }
     }
     // power rail holes
     for (var i = 0, offset = 2; i < 10; ++i, ++offset) {
         for (var j = 0; j < 5; ++j) {
             ;["-T", "+T", "-B", "+B"].forEach((col) => {
-                drawPoint(dom, i*5 + j + offset, COL_BY_NAME[col])
+                Draw.drawPoint(dom, i*5 + j + offset, COL_BY_NAME[col])
             })
         }
     }
@@ -75,9 +63,9 @@ function drawBreadboard(dom) {
 
 
 function render(ast, dom) {
-    ast.dips.forEach((dip) => drawDip(dom.components, dip))
-    ast.wires.forEach((wire) => drawWire(dom.wires, wire))
-    ast.headers.forEach((header) => drawHeader(dom.wires, header))
+    ast.dips.forEach((dip) => Draw.drawDip(dom.components, dip))
+    ast.wires.forEach((wire) => Draw.drawWire(dom.wires, wire))
+    ast.headers.forEach((header) => Draw.drawHeader(dom.wires, header))
 }
 
 

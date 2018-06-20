@@ -1,3 +1,6 @@
+import { PITCH } from "./config.js"
+
+
 function drawPoint(dom, row, col) {
     var point = document.createSvgElement("circle")
     point.setAttribute("cx", PITCH * row)
@@ -90,3 +93,6 @@ function drawDip(dom, dip) {
     indicator.setAttribute("class", "indicator")
     dom.appendChild(indicator)
 }
+
+
+export { drawPoint, drawWire, drawHeader, drawDip }

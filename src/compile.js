@@ -1,4 +1,9 @@
-LIBRARY =
+import { COL_BY_NAME } from "./config.js"
+import * as SExpr from "./sexpr.js"
+import { strict } from "./sexpr.js"
+
+
+let LIBRARY =
     { "+": strict((args) => args.reduce(Array.isArray(args[0]) ? (a, b) => a.concat(b) : (a, b) => a + b))
     , "-": strict((args) => args.length === 1 ? -args[0] : args[1] - args[0])
     , "*": strict((args) => args.reduce((a, b) => a * b))
@@ -13,10 +18,10 @@ LIBRARY =
 
             var local = {}
             for (var i = 0, e = binds.length; i < e; i += 2) {
-                local[binds[i]] = eval(go.env(local), binds[i+1])
+                local[binds[i]] = SExpr.eval(go.env(local), binds[i+1])
             }
 
-            return eval(go.env(local), body)
+            return SExpr.eval(go.env(local), body)
         }
     , "cond": (go, args) => {
             for (var i = 0; i < args.length; i += 2) {
@@ -38,13 +43,11 @@ LIBRARY =
             var over = go(args[1])
             var body = args[2]
 
-            var innerGo = (sexpr) => eval()
-
             return over.map((item, ix) => {
                 var local = {}
                 local[x] = go(item)
                 local[i] = ix
-                return eval(go.env(local), body)
+                return SExpr.eval(go.env(local), body)
             })
         }
     , "catMap": (go, args) => {
@@ -53,9 +56,9 @@ LIBRARY =
     }
 
 function compile(source) {
-    var ast = str2sexprs(source)[0]
+    var ast = SExpr.str2sexprs(source)[0]
     console.log(ast)
-    ast = eval(LIBRARY, ast)
+    ast = SExpr.eval(LIBRARY, ast)
 
     applyDefaults(ast)
     lookupParts(ast)
@@ -115,3 +118,6 @@ function adjustPositions(ast) {
         }
     })
 }
+
+
+export { compile }

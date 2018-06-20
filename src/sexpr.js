@@ -2,7 +2,7 @@ function str2sexprs(str) {
     str = str.replace(/;.*($|\n)/g, '')
     str = str.replace(/\n/g, '')
     str = str.replace(/[()[\]{}`']/g, (x) => ` ${x} `)
-    tokens = str.split(" ").filter((token) => token.length > 0)
+    const tokens = str.split(" ").filter((token) => token.length > 0)
 
     var stack = [[]]
     tokens.forEach((token) => {
@@ -49,8 +49,8 @@ function str2sexprs(str) {
 }
 
 
-function eval(env, sexpr) {
-    var go = (x) => eval(env, x)
+function evalSexpr(env, sexpr) {
+    var go = (x) => evalSexpr(env, x)
     go.env = (more) => Object.assign({}, env, more)
 
     if (sexpr.hasOwnProperty("__VAR__")) {
@@ -78,3 +78,6 @@ function eval(env, sexpr) {
 
 
 var strict = (f) => (go, sexprs) => f(sexprs.map(go))
+
+
+export { str2sexprs, evalSexpr as eval, strict }
