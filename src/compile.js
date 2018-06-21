@@ -18,7 +18,7 @@ const PRELUDE =
 
             const local = {}
             for (let i = 0, e = binds.length; i < e; i += 2) {
-                local[binds[i]] = SExpr.eval(go.env(local), binds[i+1])
+                local[binds[i].__VAR__] = SExpr.eval(go.env(local), binds[i+1])
             }
 
             return SExpr.eval(go.env(local), body)
@@ -34,12 +34,12 @@ const PRELUDE =
     , "map": (go, args) => {
             let i, x
             if (Array.isArray(args[0])) {
-                i = args[0][0]
-                x = args[0][1]
+                i = args[0][0].__VAR__
+                x = args[0][1].__VAR__
             }
             else {
                 i = undefined
-                x = args[0]
+                x = args[0].__VAR__
             }
             const over = go(args[1])
             const body = args[2]
@@ -81,6 +81,7 @@ function applyDefaults(circuit) {
 function lookupParts(circuit) {
     circuit.dips.forEach((dip) => {
         const partinfo = PINS_BY_PART[dip.partno]
+        if (partinfo === undefined) { throw `unknown part: ${dip.partno}` }
         dip.pins = partinfo.pins
         dip.width = partinfo.width
     })

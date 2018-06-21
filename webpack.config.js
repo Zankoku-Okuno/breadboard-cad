@@ -16,5 +16,6 @@ module.exports =
               , use: { loader: "babel-loader" }
             }]
         }
+    , mode: "development"
     , devtool: "source-map"
     }
