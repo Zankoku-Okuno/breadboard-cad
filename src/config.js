@@ -1,4 +1,5 @@
 const PITCH = 18
+
 const COL_BY_NAME = {
     "A": 11, "A.5": 11+0.5,
     "B": 10, "B.5": 10+0.5,
@@ -13,5 +14,6 @@ const COL_BY_NAME = {
     "-T": -4, "+T": -3,
     "-B": 14, "+B": 15,
 }
+
 
 export { PITCH, COL_BY_NAME }

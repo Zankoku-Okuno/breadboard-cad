@@ -1,5 +1,5 @@
 import { PITCH, COL_BY_NAME } from "./config.js"
-import { compile } from "./compile.js"
+import { compile } from "./circuit/compile.js"
 import * as Draw from "./draw.js"
 
 
