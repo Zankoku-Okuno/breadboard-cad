@@ -48,10 +48,37 @@ const PRELUDE =
                 return SExpr.eval(go.env(local), body)
             })
         }
+    , "forEach": (go, args) => {
+        PRELUDE["map"](go, args)
+        return null
+    }
     , "catMap": (go, args) => {
             return PRELUDE["map"](go, args).reduce((a, b) => a.concat(b), [])
         }
     }
 
 
-export { PRELUDE }
+function mkBuilder(circuit) {
+    function dip(arg) {
+        if (Array.isArray(arg)) { arg.forEach(dip) }
+        else { circuit.dips.push(arg) }
+        return null
+    }
+    function wire(arg) {
+        if (Array.isArray(arg)) { arg.forEach(wire) }
+        else { circuit.wires.push(arg) }
+        return null
+    }
+    function header(arg) {
+        if (Array.isArray(arg)) { arg.forEach(header) }
+        else { circuit.headers.push(arg) }
+        return null
+    }
+
+    return { wire: strictly((args) => args.forEach(wire))
+           , dip: strictly((args) => args.forEach(dip))
+           , header: strictly((args) => args.forEach(header))
+           }
+}
+
+export { PRELUDE, mkBuilder }

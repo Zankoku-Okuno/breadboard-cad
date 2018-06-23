@@ -1,11 +1,13 @@
 import { COL_BY_NAME } from "../config.js"
 import * as SExpr from "../sexpr.js"
-import { PRELUDE } from "./prelude.js"
+import { PRELUDE, mkBuilder } from "./prelude.js"
 
 
 function compile(source) {
     const ast = SExpr.fromStr(source)[0]
-    const circuit = SExpr.eval(PRELUDE, ast)
+    const circuit = { wires: [], dips: [], headers: [] }
+    const env = Object.assign({}, PRELUDE, mkBuilder(circuit))
+    SExpr.eval(env, ast)
 
     applyDefaults(circuit)
     lookupParts(circuit)

@@ -8,126 +8,170 @@
     rSkip 11
 
     cStart 10
-]
-{ dips (+
-    ; control units
-    [
-        { name "R/W Control" partno "74HC139" start [cStart E] }
-        { name "" partno "DIP-14" start [(+ -7 cStart) E] }
-    ]
-    ; registers
-    (map i [0 1 2 3]
-        {
-            name (+ "R" i)
-            partno "74HC376"
-            start [(+ rStart (* rSkip i)) E]
-        }))
-wires (+
-    ; power/ground for control side
-    [
-        { start [cStart +T]        stop [cStart J]        color "red" }
-        { start [(+ 7 cStart) -B]  stop [(+ 7 cStart) A]  color "black" }
-        { start [(+ -7 cStart) +T] stop [(+ -7 cStart) J] color "red" }
-        { start [(+ -1 cStart) -B] stop [(+ -1 cStart) A] color "black" }
-    ]
-    ; intra-register wires
-    (catMap i [0 1 2 3]
-        (let [
-            Vcc (+ rStart (* rSkip i))
-            GND (+ 9 Vcc)
-            adjust (cond (=? 0 (% 6 (+ 4 GND))) -1 true 0)]
-            (+
-                ; power/ground
-                [
-                    { start [Vcc +T]            stop [Vcc J] color "red" }
-                    { start [(+ adjust GND) -B] stop [GND A] color "black" }
-                ]
-                ; input bit = output bit
-                (catMap [d color] ["#0000FF" "#0040FF" "#0080FF" "#00B0FF"]
-                    (let [
-                        start (+ 1 (* 2 d) Vcc)
-                        stop (+ 1 start)]
-                        [
-                            { start [start G] stop [stop G] color color }
-                            { start [start D] stop [stop D] color color }
-                        ]))
-            )))
-    ; register bus
-    (catMap i [0 1 2]
-        (let [
-            Vcc (+ rStart (* rSkip i))
-            Vcc! (+ rSkip Vcc)
-            ]
-            (catMap [d info] [ [-0.6 "#0000FF"] [-0.4 "#0040FF"] [0.6 "#0080FF"] [0.4 "#00B0FF"] ]
-                (let [
-                    start (+ 2 (* 2 d) Vcc)
-                    stop (+ 1 (* 2 d) Vcc!)
-                    adjust (. info 0)
-                    topCol (+ 2 (- adjust)) ;; FIXME negation isn't working
-                    botCol (+ 9 adjust)
-                    color (. info 1)
-                    ]
-                    [
-                        {
-                            start [start H]
-                            route [ [start topCol] [stop topCol] ]
-                            stop [stop H]
-                            color color
-                        }
-                        {
-                            start [start C]
-                            route [ [start botCol] [stop botCol] ]
-                            stop [stop C]
-                            color color
-                        }
-                    ]))))
-    ; one-hot output enable
-    (map i [0 1 2 3]
-        {start [(+ 3 i cStart) A] route [ [(+ -1 rStart (* i rSkip)) B] ] stop [(+ rStart (* i rSkip)) D] color "orange"})
-    ; one-hot load enable
-    (+
-        [
-            {start [(+ -6 cStart) C] route [ [(+ -8 cStart) C] ] stop [(+ -8 cStart) F]            color "orange" }
-            {start [(+ -8 cStart) J] route [ [rStart I] ]        stop [(+ 9 (* 0 rSkip) rStart) G] color "orange" }
-        ]
-        (map i [1 2 3]
-            {   start [(+ -4 (* 2 i) cStart) J] 
-                route [ [(+ rStart (* i rSkip)) I] ]
-                stop [(+ 9 rStart (* i rSkip)) G]
-                color "orange" }))
-    ; to inverters
-    (+
-        [ { start [(+ -7 cStart) D]
-            route [ [(+ -0.5 cStart) 7.4] [(+ -0.5 cStart) 3.6] [(+ 4 cStart) 3.6] ]
-            stop [(+ 4 cStart) G]
-            color "#00B000"} ]
-        (map [i _] [0 1 2]
-            {   start [(+ -6 (* 2 i) cStart) G]
-                route [ [(+ -6 (* 2 i) cStart) (+ 3 -0.6 (* -0.4 i))] [(+ 5 i cStart) (+ 3 -0.6 (* -0.4 i))] ]
-                stop [(+ 5 i cStart) G]
-                color "#00B000"}))
+] [
+
+
+;;;;;;;;;;;;;;;;;;;
+;;;;;; Chips ;;;;;;
+;;;;;;;;;;;;;;;;;;;
+
+; control units
+(dip [
+    { name "R/W Control" partno "74HC139" start [cStart E] }
+    { name "" partno "DIP-14" start [(+ -7 cStart) E] }
+])
+; registers
+(forEach i [0 1 2 3]
+    (dip {
+        name (+ "R" i)
+        partno "74HC376"
+        start [(+ rStart (* rSkip i)) E]
+    })
 )
-headers (+
-    ; read/write enable inputs
-    [
-        { name "Bank Read Enable" at [     cStart  D]       color "orange" }
-        { name "Bank Write Enable" at [(+ 1 cStart) G] color "orange" }
-    ]
-    ; read/write address inputs
-    [
-        { name "Read Addr 0"      at [(+ 1 cStart) D] color "yellow" }
-        { name "Read Addr 1"      at [(+ 2 cStart) D] color "yellow" }
-        { name "Write Addr 0"      at [(+ 2 cStart) G] color "yellow" }
-        { name "Write Addr 1"      at [(+ 3 cStart) G] color "yellow" }
-    ]
-    ; data bus inouts
-    (let [
-        i 3
-        Vcc (+ rStart (* rSkip i))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Power & Ground ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(wire [
+    { start [(+ -7 cStart) +T] stop [(+ -7 cStart) J] color "red" }
+    { start [(+ -1 cStart) -B] stop [(+ -1 cStart) A] color "black" }
+    { start [cStart +T]        stop [cStart J]        color "red" }
+    { start [(+ 7 cStart) -B]  stop [(+ 7 cStart) A]  color "black" }
+])
+
+(forEach i [0 1 2 3] (let [
+    Vcc (+ rStart (* rSkip i))
+    GND (+ 9 Vcc)
+    adjust (cond (=? 0 (% 6 (+ 4 GND))) -1 true 0)
+    ] [
+    (wire [
+        { start [Vcc +T]            stop [Vcc J] color "red" }
+        { start [(+ adjust GND) -B] stop [GND A] color "black" }
+    ])
+]))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Register Bus ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(forEach i [0 1 2 3]
+    ; input bit = output bit
+    (forEach [d color] ["#0000FF" "#0040FF" "#0080FF" "#00B0FF"] (let [
+        pin1 (+ rStart (* rSkip i))
+        start (+ 1 (* 2 d) pin1)
+        stop (+ 1 start)
         ]
-        (catMap [d color] ["#0000FF" "#0040FF" "#0080FF" "#00B0FF"]
-            [
-                { name (+ D d)       at [(+ 2 (* 2 d) Vcc) J] color color }
-                { name (+ D (+ 4 d)) at [(+ 2 (* 2 d) Vcc) A] color color }
-            ])))
-}))
+        (wire [
+            { start [start G] stop [stop G] color color }
+            { start [start D] stop [stop D] color color }
+        ])
+    ))
+)
+
+(forEach i [0 1 2] (let [
+    Vcc (+ rStart (* rSkip i))
+    Vcc! (+ rSkip Vcc)
+    busses [ [-0.6 "#0000FF"] [-0.4 "#0040FF"] [0.6 "#0080FF"] [0.4 "#00B0FF"] ]
+    ]
+    (forEach [d info] busses (let [
+        start (+ 2 (* 2 d) Vcc)
+        stop (+ 1 (* 2 d) Vcc!)
+        adjust (. info 0)
+        topCol (+ 2 (- adjust)) ;; FIXME negation isn't working
+        botCol (+ 9 adjust)
+        color (. info 1)
+        ]
+        ; connect bits inter-register
+        (wire [
+            {
+                start [start H]
+                route [ [start topCol] [stop topCol] ]
+                stop [stop H]
+                color color
+            }
+            {
+                start [start C]
+                route [ [start botCol] [stop botCol] ]
+                stop [stop C]
+                color color
+            }
+        ])
+    ))
+))
+
+(let [
+    i 3
+    Vcc (+ rStart (* rSkip i))
+    ]
+    (forEach [d color] ["#0000FF" "#0040FF" "#0080FF" "#00B0FF"]
+        ; data bus inouts
+        (header [
+            { name (+ D d)       at [(+ 2 (* 2 d) Vcc) J] color color }
+            { name (+ D (+ 4 d)) at [(+ 2 (* 2 d) Vcc) A] color color }
+        ])
+    )
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;; Control Bus ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(forEach i [0 1 2 3]
+    ; one-hot output enable
+    (wire {
+        start [(+ 3 i cStart) A]
+        route [ [(+ -1 rStart (* i rSkip)) B] ]
+        stop [(+ rStart (* i rSkip)) D]
+        color "orange"
+    })
+)
+
+; one-hot load enable
+(wire [
+    {start [(+ -6 cStart) C] route [ [(+ -8 cStart) C] ] stop [(+ -8 cStart) F]            color "orange" }
+    {start [(+ -8 cStart) J] route [ [rStart I] ]        stop [(+ 9 (* 0 rSkip) rStart) G] color "orange" }
+])
+(forEach i [1 2 3]
+    (wire {
+        start [(+ -4 (* 2 i) cStart) J] 
+        route [ [(+ rStart (* i rSkip)) I] ]
+        stop [(+ 9 rStart (* i rSkip)) G]
+        color "orange"
+    })
+)
+
+; to inverters
+(wire {
+    start [(+ -7 cStart) D]
+    route [ [(+ -0.5 cStart) 7.4] [(+ -0.5 cStart) 3.6] [(+ 4 cStart) 3.6] ]
+    stop [(+ 4 cStart) G]
+    color "#00B000"
+})
+(forEach i [0 1 2]
+    (wire {
+        start [(+ -6 (* 2 i) cStart) G]
+        route [ [(+ -6 (* 2 i) cStart) (+ 3 -0.6 (* -0.4 i))] [(+ 5 i cStart) (+ 3 -0.6 (* -0.4 i))] ]
+        stop [(+ 5 i cStart) G]
+        color "#00B000"
+    })
+)
+
+; read/write enable inputs
+(header [
+    { name "Bank Read Enable" at [     cStart  D]       color "orange" }
+    { name "Bank Write Enable" at [(+ 1 cStart) G] color "orange" }
+])
+
+; read/write address inputs
+(header [
+    { name "Read Addr 0"      at [(+ 1 cStart) D] color "yellow" }
+    { name "Read Addr 1"      at [(+ 2 cStart) D] color "yellow" }
+    { name "Write Addr 0"      at [(+ 2 cStart) G] color "yellow" }
+    { name "Write Addr 1"      at [(+ 3 cStart) G] color "yellow" }
+])
+
+
+]))
