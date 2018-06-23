@@ -12,14 +12,17 @@ function point(dom, row, col) {
 
 
 function wire(dom, wire) {
-    point(dom, wire.start[0], wire.start[1]).setAttribute("fill", wire.color)
-    point(dom, wire.stop[0], wire.stop[1]).setAttribute("fill", wire.color)
+    const start = wire.route[0]
+    const stop = wire.route[wire.route.length - 1]
+    point(dom, start[0], start[1]).setAttribute("fill", wire.color)
+    point(dom, stop[0], stop[1]).setAttribute("fill", wire.color)
 
-    let d = "M "+(wire.start[0]*PITCH)+" "+(wire.start[1]*PITCH)
+    let d = ""
+    let cmd = "M "
     wire.route.forEach((point) => {
-        d += " L "+(point[0]*PITCH)+" "+(point[1]*PITCH)
+        d += cmd+(point[0]*PITCH)+" "+(point[1]*PITCH)
+        cmd = " L "
     })
-    d += " L "+(wire.stop[0]*PITCH)+" "+(wire.stop[1]*PITCH)
     const line = document.createSvgElement("path")
     line.setAttribute("d", d)
     line.setAttribute("stroke", wire.color)

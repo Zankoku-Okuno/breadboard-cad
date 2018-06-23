@@ -35,10 +35,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (wire [
-    { start [(+ -7 cStart) +T] stop [(+ -7 cStart) J] color "red" }
-    { start [(+ -1 cStart) -B] stop [(+ -1 cStart) A] color "black" }
-    { start [cStart +T]        stop [cStart J]        color "red" }
-    { start [(+ 7 cStart) -B]  stop [(+ 7 cStart) A]  color "black" }
+    { route [ [(+ -7 cStart) +T] [(+ -7 cStart) J] ] color "red" }
+    { route [ [(+ -1 cStart) -B] [(+ -1 cStart) A] ] color "black" }
+    { route [ [cStart +T]        [cStart J]        ] color "red" }
+    { route [ [(+ 7 cStart) -B]  [(+ 7 cStart) A]  ] color "black" }
 ])
 
 (forEach i [0 1 2 3] (let [
@@ -47,8 +47,8 @@
     adjust (cond (=? 0 (% 6 (+ 4 GND))) -1 true 0)
     ] [
     (wire [
-        { start [Vcc +T]            stop [Vcc J] color "red" }
-        { start [(+ adjust GND) -B] stop [GND A] color "black" }
+        { route [ [Vcc +T]            [Vcc J] ] color "red" }
+        { route [ [(+ adjust GND) -B] [GND A] ] color "black" }
     ])
 ]))
 
@@ -61,12 +61,12 @@
     ; input bit = output bit
     (forEach [d color] ["#0000FF" "#0040FF" "#0080FF" "#00B0FF"] (let [
         pin1 (+ rStart (* rSkip i))
-        start (+ 1 (* 2 d) pin1)
-        stop (+ 1 start)
+        startRow (+ 1 (* 2 d) pin1)
+        stopRow (+ 1 startRow)
         ]
         (wire [
-            { start [start G] stop [stop G] color color }
-            { start [start D] stop [stop D] color color }
+            { route [ [startRow G] [stopRow G] ] color color }
+            { route [ [startRow D] [stopRow D] ] color color }
         ])
     ))
 )
@@ -77,8 +77,8 @@
     busses [ [-0.6 "#0000FF"] [-0.4 "#0040FF"] [0.6 "#0080FF"] [0.4 "#00B0FF"] ]
     ]
     (forEach [d info] busses (let [
-        start (+ 2 (* 2 d) Vcc)
-        stop (+ 1 (* 2 d) Vcc!)
+        startRow (+ 2 (* 2 d) Vcc)
+        stopRow (+ 1 (* 2 d) Vcc!)
         adjust (. info 0)
         topCol (+ 2 (- adjust)) ;; FIXME negation isn't working
         botCol (+ 9 adjust)
@@ -86,18 +86,8 @@
         ]
         ; connect bits inter-register
         (wire [
-            {
-                start [start H]
-                route [ [start topCol] [stop topCol] ]
-                stop [stop H]
-                color color
-            }
-            {
-                start [start C]
-                route [ [start botCol] [stop botCol] ]
-                stop [stop C]
-                color color
-            }
+            { route [ [startRow H] [startRow topCol] [stopRow topCol] [stopRow H] ] color color }
+            { route [ [startRow C] [startRow botCol] [stopRow botCol] [stopRow C] ] color color }
         ])
     ))
 ))
@@ -122,39 +112,36 @@
 (forEach i [0 1 2 3]
     ; one-hot output enable
     (wire {
-        start [(+ 3 i cStart) A]
-        route [ [(+ -1 rStart (* i rSkip)) B] ]
-        stop [(+ rStart (* i rSkip)) D]
+        route [ [(+ 3 i cStart) A] [(+ -1 rStart (* i rSkip)) B] [(+ rStart (* i rSkip)) D] ]
         color "orange"
     })
 )
 
 ; one-hot load enable
 (wire [
-    {start [(+ -6 cStart) C] route [ [(+ -8 cStart) C] ] stop [(+ -8 cStart) F]            color "orange" }
-    {start [(+ -8 cStart) J] route [ [rStart I] ]        stop [(+ 9 (* 0 rSkip) rStart) G] color "orange" }
+    { route [ [(+ -6 cStart) C] [(+ -8 cStart) C] [(+ -8 cStart) F] ] color "orange" }
+    { route [ [(+ -8 cStart) J] [rStart I]        [(+ 9 rStart) G]  ] color "orange" }
 ])
 (forEach i [1 2 3]
     (wire {
-        start [(+ -4 (* 2 i) cStart) J] 
-        route [ [(+ rStart (* i rSkip)) I] ]
-        stop [(+ 9 rStart (* i rSkip)) G]
+        route [ [(+ -4 (* 2 i) cStart) J] [(+ rStart (* i rSkip)) I] [(+ 9 rStart (* i rSkip)) G] ]
         color "orange"
     })
 )
 
 ; to inverters
 (wire {
-    start [(+ -7 cStart) D]
-    route [ [(+ -0.5 cStart) 7.4] [(+ -0.5 cStart) 3.6] [(+ 4 cStart) 3.6] ]
-    stop [(+ 4 cStart) G]
+    route [ [(+ -7 cStart) D] [(+ -0.5 cStart) 7.4] [(+ -0.5 cStart) 3.6] [(+ 4 cStart) 3.6] [(+ 4 cStart) G] ]
     color "#00B000"
 })
 (forEach i [0 1 2]
     (wire {
-        start [(+ -6 (* 2 i) cStart) G]
-        route [ [(+ -6 (* 2 i) cStart) (+ 3 -0.6 (* -0.4 i))] [(+ 5 i cStart) (+ 3 -0.6 (* -0.4 i))] ]
-        stop [(+ 5 i cStart) G]
+        route [
+            [(+ -6 (* 2 i) cStart) G]
+            [(+ -6 (* 2 i) cStart) (+ 3 -0.6 (* -0.4 i))]
+            [(+ 5 i cStart) (+ 3 -0.6 (* -0.4 i))]
+            [(+ 5 i cStart) G]
+        ]
         color "#00B000"
     })
 )

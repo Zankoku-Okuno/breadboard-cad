@@ -46,20 +46,12 @@ function adjustPositions(circuit) {
         }
     })
     circuit.wires.forEach((wire) => {
-        wire.start[0]--
-        if (typeof wire.start[1] !== "number") {
-            wire.start[1] = COL_BY_NAME[wire.start[1]]
-        }
         wire.route.forEach((point) => {
             point[0]--
             if (typeof point[1] !== "number") {
                 point[1] = COL_BY_NAME[point[1]]
             }
         })
-        wire.stop[0]--
-        if (typeof wire.stop[1] !== "number") {
-            wire.stop[1] = COL_BY_NAME[wire.stop[1]]
-        }
     })
     circuit.headers.forEach((header) => {
         header.at[0]--
