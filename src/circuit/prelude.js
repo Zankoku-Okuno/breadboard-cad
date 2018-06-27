@@ -7,7 +7,11 @@ const PRELUDE =
     , "-": strictly((args) => args.length === 1 ? -args[0] : args[1] - args[0])
     , "*": strictly((args) => args.reduce((a, b) => a * b))
     , "%": strictly((args) => args[1] % args[0])
-    , ".": strictly((args) => args[0][args[1]])
+    , ".": strictly((args) => {
+            let it = args[0]
+            for (let i = 1, e = args.length; i < e; ++i) { it = it[args[i]] }
+            return it
+        })
     , "=?": strictly((args) => args[0] === args[1])
     , "DEBUG": strictly((args) => { console.log(args[0]); return args[0] })
     , "cat": strictly((args) => args[0].reduce((a, b) => a.concat(b)))
